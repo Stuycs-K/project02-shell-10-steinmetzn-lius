@@ -23,7 +23,7 @@ void print_prompt() {
   else {
     perror("could not get cwd");
   }
-  
+
   fflush(stdout);
   printf(" $ ");
 }
@@ -36,7 +36,7 @@ void change_dir(char *path) {
 }
 
 //takes in command from user and separates its arguments; input is line, which is put it into array arg_ary; no return
-void parse_args(char * line, char ** arg_ary){ 
+void parse_args(char * line, char ** arg_ary){
   char * token;
   int i = 0;
 
@@ -63,6 +63,10 @@ void execute(char first[], char * args[]){
       change_dir(getenv("HOME"));
     }
     return;
+  }
+  // handling "exit" command
+  else if (strcmp(args[0], "exit") == 0) {
+    kill(getpid(), 3);
   }
 
   pid_t p;
