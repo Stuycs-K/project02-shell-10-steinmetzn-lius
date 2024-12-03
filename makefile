@@ -1,5 +1,4 @@
 .PHONY: compile run clean
-.PHONY: compile run clean
 compile shell: main.o shell.o
 	@gcc -o shell main.o shell.o
 main.o: main.c shell.h
