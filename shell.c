@@ -3,7 +3,8 @@
 #include <string.h>
 #include "shell.h"
 
-void parse_args( char * line, char ** arg_ary ){
+//takes in command from user and separates its arguments; input is line, which is put it into array arg_ary; no return
+void parse_args( char * line, char ** arg_ary ){ 
   char * token;
   int i = 0;
   while (line){
