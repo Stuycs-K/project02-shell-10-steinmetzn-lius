@@ -70,7 +70,7 @@ void execute(char first[], char * args[]){
 
   // handling "exit" command
   else if (strcmp(args[0], "exit") == 0) {
-    kill(getpid(), 3);
+    exit(1);
   }
 
   pid_t p;
