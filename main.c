@@ -17,7 +17,7 @@ int main() {
     while ((token = strsep(&input, ";")) != NULL) {
       char * command = token;
       while ((token2 = strsep(&command, ">"))) {
-        //sophie remove space after ls -al
+        token2[strlen(token2)-1] = '\0';
         printf("token2: %s000\n", token2);
         int place = redirectOut(command);
         parse_args(token2, args);

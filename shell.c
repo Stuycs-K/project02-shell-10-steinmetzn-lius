@@ -44,7 +44,7 @@ void parse_args(char * line, char ** arg_ary){
   int i = 0;
 
   // strips newline character if present
-  line[strcspn(line, "\n")] = '\0';
+  //line[strcspn(line, "\n")] = '\0';
 
   while (line) {
     token = strsep(&line, " ");
@@ -70,7 +70,7 @@ void execute(char first[], char * args[]){
 
   // handling "exit" command
   else if (strcmp(args[0], "exit") == 0) {
-    kill(getpid(), 3);
+    exit(1);
   }
 
   pid_t p;
