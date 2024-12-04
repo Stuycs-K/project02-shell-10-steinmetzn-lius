@@ -67,7 +67,7 @@ void execute(char first[], char * args[]){
     }
     return;
   }
-  
+
   // handling "exit" command
   else if (strcmp(args[0], "exit") == 0) {
     kill(getpid(), 3);
@@ -91,15 +91,15 @@ void execute(char first[], char * args[]){
 //redirect stdout when > comes up; newOut is name of file; returns backup stdout
 int redirectOut(char * newOut){
   int fd1 = open(newOut, O_WRONLY | O_TRUNC | O_CREAT);
-  int FILENO = stdout;
-  int backup_stdout = dup( FILENO ); // save stdout for later
-  dup2(fd1, FILENO); //sets FILENO's entry to the file for fd1.
+  int stdout = STDOUT_FILENO;
+  int backup_stdout = dup( stdout ); // save stdout for later
+  dup2(fd1, stdout); //sets FILENO's entry to the file for fd1.
   return backup_stdout;
 }
 
 //redirect stdout back to backup; backup_stdout is old stdout
 void redirectOutBack(int backup_stdout){
   fflush(stdout);//not needed when a child process exits, becaue exiting a process will flush automatically.
-  int FILENO = stdout;
-  dup2(backup_stdout, FILENO);
+  int stdout = STDOUT_FILENO;
+  dup2(backup_stdout, stdout);
 }
