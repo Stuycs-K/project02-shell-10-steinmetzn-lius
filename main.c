@@ -13,9 +13,19 @@ int main() {
       exit(1); // ctrl d
     }
     char * input = line;
+    char * input2 = input;
     while ((token = strsep(&input, ";")) != NULL) {
-      parse_args(token, args);
-      execute(args[0], args);
+      char * token2 = token;
+      input2 = strsep(token2, ">");
+      if (strcmp(token2,input2) != 0){
+        int place = redirectOut(token2);
+        execute(input2, args);
+        redirectOutBack(place);
+      }
+      else{
+        parse_args(token, args);
+        execute(args[0], args);
+      }
     }
   }
 

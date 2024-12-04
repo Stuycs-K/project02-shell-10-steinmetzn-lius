@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <fcntl.h>
+#include <errno.h>
 #include "shell.h"
 
 #define MAX_PATH_LEN 1024
@@ -84,4 +86,20 @@ void execute(char first[], char * args[]){
     WIFEXITED(status);
     child = wait(&status);
   }
+}
+
+//redirect stdout when > comes up; newOut is name of file; returns backup stdout
+int redirectOut(char * newOut){
+  int fd1 = open(newOut, O_WRONLY | O_TRUNC | O_CREAT);
+  int FILENO = stdout;
+  int backup_stdout = dup( FILENO ); // save stdout for later
+  dup2(fd1, FILENO); //sets FILENO's entry to the file for fd1.
+  return backup_stdout;
+}
+
+//redirect stdout back to backup; backup_stdout is old stdout
+void redirectOutBack(int backup_stdout){
+  fflush(stdout);//not needed when a child process exits, becaue exiting a process will flush automatically.
+  int FILENO = stdout;
+  dup2(backup_stdout, FILENO);
 }
