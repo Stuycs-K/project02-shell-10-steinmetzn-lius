@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/wait.h>
 #include "shell.h"
 
@@ -64,6 +65,7 @@ void execute(char first[], char * args[]){
     }
     return;
   }
+  
   // handling "exit" command
   else if (strcmp(args[0], "exit") == 0) {
     kill(getpid(), 3);
