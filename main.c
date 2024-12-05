@@ -29,8 +29,7 @@ int main() {
         sscanf(token2, " %s", token2);
         int place = redirectOut(token2);
         parse_args(input2, args);
-        printf("arg1: %s\n", args[1]);
-        execute(input2, args);
+        execute(args[0], args);
         redirectOutBack(place);
       }
     }
