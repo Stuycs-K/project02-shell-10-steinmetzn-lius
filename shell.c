@@ -90,7 +90,7 @@ void execute(char first[], char * args[]){
 
 //redirect stdout when > comes up; newOut is name of file; returns backup stdout
 int redirectOut(char * newOut){
-  int fd1 = open(newOut, O_WRONLY | O_TRUNC | O_CREAT);
+  int fd1 = open(newOut, O_RDWR | O_TRUNC | O_CREAT, 0644);
   int stdout = STDOUT_FILENO;
   int backup_stdout = dup( stdout ); // save stdout for later
   dup2(fd1, stdout); //sets FILENO's entry to the file for fd1.
