@@ -15,9 +15,9 @@ int main() {
     char * input = line;
     while ((command = strsep(&input, ";")) != NULL) {
 
-      char * command_right = command;
+      char * command_right = command; //part of cmd after >
       char * command_left = strsep(&command_right, ">");
-      if (command_right == NULL || strcmp(command_right,command_left) == 0){
+      if (command_right == NULL || strcmp(command_right, command_left) == 0){
 
         //remove leading and trailing spaces from command
         while (*command == ' ') command++;
