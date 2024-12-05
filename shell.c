@@ -103,3 +103,15 @@ void redirectOutBack(int backup_stdout){
   int stdout = STDOUT_FILENO;
   dup2(backup_stdout, stdout);
 }
+
+void handle_pipe(char * cmd1, char * cmd2) {
+  FILE *pipe_in, *pipe_out;
+  char buffer[256];
+  pipe_in = popen(cmd1, "r");
+  pipe_out = popen(cmd2, "w");
+  while (fgets(buffer, sizeof(buffer), pipe_in) != NULL) {
+    fputs(buffer, pipe_out);
+  }
+  fclose(pipe_in);
+  fclose(pipe_out);
+}

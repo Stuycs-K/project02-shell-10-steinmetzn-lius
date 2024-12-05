@@ -14,8 +14,21 @@ int main() {
     }
     char * input = line;
     while ((token = strsep(&input, ";")) != NULL) {
-      parse_args(token, args);
-      execute(args[0], args);
+
+      char * pipe_pos = strstr(token, "|");
+      if (pipe_pos != NULL) {
+          // split the command at the pipe symbol
+          *pipe_pos = '\0';
+          char * cmd1 = token;
+          char * cmd2 = pipe_pos + 1;
+
+          handle_pipe(cmd1, cmd2);
+      }
+      
+      else {
+        parse_args(token, args);
+        execute(args[0], args);
+      }
     }
     // char * input2 = input;
     // while ((token = strsep(&input, ";")) != NULL) {
