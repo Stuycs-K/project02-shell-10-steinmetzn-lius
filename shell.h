@@ -7,4 +7,7 @@ void parse_args(char * line, char ** arg_ary);
 void execute(char first[], char * args[]);
 int redirectOut(char * newOut);
 void redirectOutBack(int backup_stdout);
+int redirectIn(char * newIn);
+void redirectInBack(int backup_stdin);
+
 #endif

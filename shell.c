@@ -103,3 +103,19 @@ void redirectOutBack(int backup_stdout){
   int stdout = STDOUT_FILENO;
   dup2(backup_stdout, stdout);
 }
+
+//redirect stdin when < comes up; newIn is name of file; returns backup stdin
+int redirectIn(char * newIn){
+  int fd1 = open(newIn, O_RDWR | O_TRUNC | O_CREAT, 0644);
+  int stdin = STDIN_FILENO;
+  int backup_stdin = dup(stdin);
+  dup2(stdin, fd1);
+  return backup_stdin;
+}
+
+//redirect stdin back to backup; backup_stdin is old stdin
+void redirectInBack(int backup_stdin){
+  //fflush(stdout);//not needed when a child process exits, becaue exiting a process will flush automatically.
+  int stdin = STDOUT_FILENO;
+  dup2(stdin, backup_stdin);
+}
