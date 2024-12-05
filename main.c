@@ -13,15 +13,11 @@ int main() {
       exit(1); // ctrl d
     }
     char * input = line;
-    // while ((token = strsep(&input, ";")) != NULL) {
-    //   parse_args(token, args);
-    //   execute(args[0], args);
-    // }
     char * input2 = input;
     while ((token = strsep(&input, ";")) != NULL) {
       char * token2 = token;
       input2 = strsep(&token2, ">");
-      if (token2 == NULL || strcmp(token2,input2) == 0){
+      if (token2 == NULL || strcmp(token2,input2) == 0){ //check if token contained >
         parse_args(token, args);
         execute(args[0], args);
       }
