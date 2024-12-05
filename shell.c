@@ -49,16 +49,10 @@ void parse_args(char * line, char ** arg_ary){
   while (line) {
     token = strsep(&line, " ");
     arg_ary[i] = token;
-    printf("ary: %s\n", arg_ary[i]);
+    //printf("ary: %s\n", arg_ary[i]);
     i++;
   }
-  if (strcmp(arg_ary[i--],"") == 0) {
-    printf("sdksd  %s \n", arg_ary[i]);
-    arg_ary[i] = NULL;
-  }
-  else {
-    arg_ary[i] = NULL;
-  }
+  arg_ary[i] = NULL;
 }
 
 //fork and execvp; first[] is arg[0] and args[] is arguments from input; returns 1 when done
@@ -109,4 +103,22 @@ void redirectOutBack(int backup_stdout){
   fflush(stdout);//not needed when a child process exits, becaue exiting a process will flush automatically.
   int stdout = STDOUT_FILENO;
   dup2(backup_stdout, stdout);
+  close(backup_stdout);
+}
+
+//redirect stdin when < comes up; newIn is name of file; returns backup stdin
+int redirectIn(char * newIn){
+  int fd1 = open(newIn, O_RDWR | O_TRUNC | O_CREAT, 0644);
+  int stdin = STDIN_FILENO;
+  int backup_stdin = dup(stdin);
+  dup2(fd1, stdin);
+  return backup_stdin;
+}
+
+//redirect stdin back to backup; backup_stdin is old stdin
+void redirectInBack(int backup_stdin){
+  fflush(stdin);//not needed when a child process exits, becaue exiting a process will flush automatically.
+  int stdin = STDOUT_FILENO;
+  dup2(backup_stdin, stdin);
+  close(backup_stdin);
 }
