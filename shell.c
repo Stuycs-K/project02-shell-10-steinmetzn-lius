@@ -44,14 +44,21 @@ void parse_args(char * line, char ** arg_ary){
   int i = 0;
 
   // strips newline character if present
-  //line[strcspn(line, "\n")] = '\0';
+  line[strcspn(line, "\n")] = '\0';
 
   while (line) {
     token = strsep(&line, " ");
     arg_ary[i] = token;
+    printf("ary: %s\n", arg_ary[i]);
     i++;
   }
-  arg_ary[i] = NULL;
+  if (strcmp(arg_ary[i--],"") == 0) {
+    printf("sdksd  %s \n", arg_ary[i]);
+    arg_ary[i] = NULL;
+  }
+  else {
+    arg_ary[i] = NULL;
+  }
 }
 
 //fork and execvp; first[] is arg[0] and args[] is arguments from input; returns 1 when done
@@ -90,7 +97,7 @@ void execute(char first[], char * args[]){
 
 //redirect stdout when > comes up; newOut is name of file; returns backup stdout
 int redirectOut(char * newOut){
-  int fd1 = open(newOut, O_WRONLY | O_TRUNC | O_CREAT);
+  int fd1 = open(newOut, O_RDWR | O_TRUNC | O_CREAT, 0644);
   int stdout = STDOUT_FILENO;
   int backup_stdout = dup( stdout ); // save stdout for later
   dup2(fd1, stdout); //sets FILENO's entry to the file for fd1.
