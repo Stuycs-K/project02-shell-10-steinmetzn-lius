@@ -4,3 +4,25 @@
 **Group Name:** Seg fault counter: INT_MAX
 <br>
 **Group Members:** Naomi Steinmetz, Sophie Liu
+<hr>
+
+**Shell Features:**
+- reading user input
+- execute commands
+- command separation with semicolons
+- printing cwd path
+- exiting w/ "exit" and ctrl d
+- redirection w/ >
+
+**Function Headers:**
+```
+void print_prompt();
+void change_dir(char * path);
+void parse_args(char * line, char ** arg_ary);
+void execute(char first[], char * args[]);
+int redirectOut(char * newOut);
+void redirectOutBack(int backup_stdout);
+int redirectIn(char * newIn);
+void redirectInBack(int backup_stdin);
+```
+
