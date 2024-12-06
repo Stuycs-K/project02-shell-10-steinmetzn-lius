@@ -10,7 +10,7 @@
 
 #define MAX_PATH_LEN 1024
 
-// prints current working directory. shortens home directory to ~
+// prints current working directory. shortens home directory to ~. returns nothing
 void print_prompt() {
   char dir[MAX_PATH_LEN];
   char *home = getenv("HOME");
@@ -31,7 +31,7 @@ void print_prompt() {
   printf(" $ ");
 }
 
-// changes directory to given path
+// changes directory to given path. returns nothing
 void change_dir(char *path) {
   if (chdir(path) != 0) {
     perror("cd error");

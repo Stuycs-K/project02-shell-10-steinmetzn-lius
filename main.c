@@ -8,27 +8,39 @@ int main() {
     print_prompt();
     char * args[50];
     char line[250];
-    char * token;
+    char * command;
     if (fgets(line, sizeof(line), stdin) == NULL) {
       exit(1); // ctrl d
     }
     char * input = line;
-    char * input2 = input;
     char * input3 = input;
-    while ((token = strsep(&input, ";")) != NULL) {
-      char * token2 = token;
-      char * token3 = token;
-      input2 = strsep(&token2, ">");
+    while ((command = strsep(&input, ";")) != NULL) {
+      char * command_right = command;
+      char * token3 = command;
+      char * command_left = strsep(&command_right, ">");
       input3 = strsep(&token3, "<");
-      if (token2 == NULL && token3 == NULL || strcmp(token2,input2) == 0){ //check if token contained >
-        parse_args(token, args);
+      if (command_right == NULL && token3 == NULL || strcmp(command_right, command_left) == 0){ //check if token contained >
+
+        //remove leading and trailing spaces from command
+        while (*command == ' ') command++;
+        char * end = command + strlen(command) - 1;
+        while (end > command && *end == ' ') end--;
+        *(end + 1) = '\0';
+
+        parse_args(command, args);
         execute(args[0], args);
       }
       else{
         if (token3 == NULL){
-          sscanf(token2, " %s", token2);
-          int place = redirectOut(token2);
-          parse_args(input2, args);
+          //remove leading spaces from right part of command and trailing spaces from left part of command
+          while (*command_right == ' ') command_right++;
+          char * end = command_left + strlen(command_left) - 1;
+          while (end > command_left && *end == ' ') end--;
+          *(end + 1) = '\0';
+
+          sscanf(command_right, " %s", command_right);
+          int place = redirectOut(command_right);
+          parse_args(command_left, args);
           execute(args[0], args);
           redirectOutBack(place);
         }
