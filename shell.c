@@ -9,6 +9,15 @@
 #include "shell.h"
 
 #define MAX_PATH_LEN 1024
+#define BUFFER_SIZE 1024
+
+
+int err(){
+  printf("errno %d\n",errno);
+  printf("%s\n",strerror(errno));
+  exit(1);
+}
+
 
 // prints current working directory. shortens home directory to ~. returns nothing
 void print_prompt() {
@@ -105,17 +114,32 @@ void redirectOutBack(int backup_stdout){
 }
 
 //redirect stdin when < comes up; newIn is name of file; returns backup stdin
-int redirectIn(char * newIn){
-  int fd1 = open(newIn, O_RDWR | O_TRUNC | O_CREAT, 0644);
-  int stdin = STDIN_FILENO;
-  int backup_stdin = dup(stdin);
-  dup2(fd1, stdin);
-  return backup_stdin;
+void redirectIn(char * command, char * newIn){
+  // int fd1 = open(newIn, O_RDWR | O_TRUNC | O_CREAT, 0644);
+  // int stdin = STDIN_FILENO;
+  // int backup_stdin = dup(stdin);
+  // dup2(fd1, stdin);
+  // return backup_stdin;
+
+  FILE * f = fopen(newIn, "r");
+  if (f == NULL){
+    err();
+  }
+  char * check;
+  char buffer[BUFFER_SIZE];
+  command[strlen(command)] = 32;
+  while (fgets(buffer, sizeof(buffer), f)){
+    check = command;
+    check = strcat(check, buffer);
+    char * args[50];
+    parse_args(command, args);
+    execute(args[0], args);
+  }
 }
 
-//redirect stdin back to backup; backup_stdin is old stdin
-void redirectInBack(int backup_stdin){
-  //fflush(stdout);//not needed when a child process exits, becaue exiting a process will flush automatically.
-  int stdin = STDOUT_FILENO;
-  dup2(backup_stdin, stdin);
-}
+// //redirect stdin back to backup; backup_stdin is old stdin
+// void redirectInBack(int backup_stdin){
+//   //fflush(stdout);//not needed when a child process exits, becaue exiting a process will flush automatically.
+//   int stdin = STDOUT_FILENO;
+//   dup2(backup_stdin, stdin);
+// }

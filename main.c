@@ -46,10 +46,9 @@ int main() {
         }
         else{
           sscanf(token3, " %s", token3);
-          int place = redirectIn(token3);
+          redirectIn(input3, token3);
           parse_args(input3, args);
           execute(args[0], args);
-          redirectInBack(place);
         }
       }
     }
