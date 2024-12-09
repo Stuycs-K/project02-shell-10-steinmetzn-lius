@@ -24,5 +24,6 @@ int redirectOut(char * newOut);
 void redirectOutBack(int backup_stdout);
 int redirectIn(char * newIn);
 void redirectInBack(int backup_stdin);
+void handle_pipe(char * command, char * side);
 ```
 
