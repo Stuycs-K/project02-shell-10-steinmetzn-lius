@@ -23,24 +23,24 @@ int main() {
     char * command;
     int command_count = 0;
     
-    // Split the input by semicolons
+    // split input by semicolons
     while ((command = strsep(&input, ";")) != NULL) {
         commands[command_count++] = command;
     }
     
     for (int i = 0; i < command_count; i++) {
-        // Prepare to handle redirection or pipes
+        // preparing to handle redirection
         int input_redirect = 0, output_redirect = 0;
         char *input_file = NULL, *output_file = NULL;
         
-        // Remove leading spaces
+        // remove leading spaces
         while (*commands[i] == ' ') commands[i]++;
 
         char *command_copy = strdup(commands[i]);
         char *args[MAX_ARGS];
         int arg_count = 0;
 
-        // Check for redirection symbols
+        // check for redirection symbols
         char *input_redirect_pos = strchr(command_copy, '<');
         char *output_redirect_pos = strchr(command_copy, '>');
         

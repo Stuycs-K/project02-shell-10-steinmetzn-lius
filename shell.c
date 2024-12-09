@@ -77,7 +77,7 @@ void execute(char * args[], int input_redirect, int output_redirect, char *input
     exit(1);
   } else if (p == 0) {
 
-    // Handle input redirection
+    // handle input redirection
     if (input_redirect) {
       int input_fd = open(input_file, O_RDONLY);
       if (input_fd == -1) {
@@ -89,7 +89,7 @@ void execute(char * args[], int input_redirect, int output_redirect, char *input
       close(input_fd);
     }
 
-    // Handle output redirection
+    // handle output redirection
     if (output_redirect) {
       int output_fd = open(output_file, O_WRONLY | O_TRUNC | O_CREAT, 0644);
       if (output_fd == -1) {
