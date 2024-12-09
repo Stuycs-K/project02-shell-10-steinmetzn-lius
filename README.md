@@ -12,7 +12,8 @@
 - command separation with semicolons
 - printing cwd path
 - exiting w/ "exit" and ctrl d
-- redirection w/ >
+- redirection w/ > and <
+- handling one pipe
 
 **Function Headers:**
 ```
@@ -24,5 +25,6 @@ int redirectOut(char * newOut);
 void redirectOutBack(int backup_stdout);
 int redirectIn(char * newIn);
 void redirectInBack(int backup_stdin);
+void handle_pipe(char * command, char * side);
 ```
 

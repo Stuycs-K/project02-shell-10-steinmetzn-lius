@@ -3,53 +3,124 @@
 #include <string.h>
 #include "shell.h"
 
+#define MAX_INPUT_SIZE 250
+#define MAX_ARGS 100
+
+// pipe handling, call once for each side. if side is left, redirect stdout to a temp file. if side is right, redirect the temp file to stdin. returns nothinng
+void handle_pipe(char * command, char * side) {
+  char *args[MAX_ARGS];
+  
+  // preparing for redirection
+  int input_redirect = 0, output_redirect = 0;
+  char *input_file = NULL, *output_file = NULL;
+  
+  // remove leading spaces
+  while (*command == ' ') command++;
+
+  if (strcmp(side, "left") == 0) {
+    char *input_redirect_pos = strchr(command, '<');
+    if (input_redirect_pos != NULL) {
+      input_redirect = 1;
+      *input_redirect_pos = '\0';
+      input_file = strtok(input_redirect_pos + 1, " \t");
+    }
+    output_redirect = 1;
+    output_file = "temp";
+
+    // remove trailing spaces
+    char * end = command + strlen(command) - 1;
+    while (end > command && *end == ' ') {
+        *end = '\0';
+        end--;
+    }
+
+    parse_args(command, args);
+    execute(args, input_redirect, output_redirect, input_file, output_file);
+  }
+  // side == "right"
+  else {
+    char *output_redirect_pos = strchr(command, '>');
+    if (output_redirect_pos != NULL) {
+      output_redirect = 1;
+      *output_redirect_pos = '\0';
+      output_file = strtok(output_redirect_pos + 1, " \t");
+    }
+    input_redirect = 1;
+    input_file = "temp";
+
+    // remove trailing spaces
+    char * end = command + strlen(command) - 1;
+    while (end > command && *end == ' ') {
+        *end = '\0';
+        end--;
+    }
+
+    parse_args(command, args);
+    execute(args, input_redirect, output_redirect, input_file, output_file);
+    remove("temp");
+  }
+}
+
 int main() {
   while (1){
     print_prompt();
-    char * args[50];
-    char line[250];
-    char * command;
+    char line[MAX_INPUT_SIZE];
     if (fgets(line, sizeof(line), stdin) == NULL) {
-      exit(1); // ctrl d
+        printf("\n");
+        break; //ctrl-d exit
     }
-    char * input = line;
-    char * input3 = input;
-    while ((command = strsep(&input, ";")) != NULL) {
-      char * command_right = command;
-      char * token3 = command;
-      char * command_left = strsep(&command_right, ">");
-      input3 = strsep(&token3, "<");
-      if (command_right == NULL && token3 == NULL || strcmp(command_right, command_left) == 0){ //check if token contained >
 
-        //remove leading and trailing spaces from command
+    // strips newline character if present
+    line[strcspn(line, "\n")] = '\0';
+
+    char * input = line;
+    char * command;
+    
+    // split input by semicolons
+    while ((command = strsep(&input, ";")) != NULL) {
+      // pipe
+      if (strchr(command, '|')) {
+        char *cmd1 = strsep(&command, "|");
+        handle_pipe(cmd1, "left");
+        handle_pipe(command, "right");
+      }
+      else {
+        char *args[MAX_ARGS];
+
+        // preparing to handle redirection
+        int input_redirect = 0, output_redirect = 0;
+        char *input_file = NULL, *output_file = NULL;
+        
+        // remove leading spaces
         while (*command == ' ') command++;
+
+        // check for redirection symbols
+        char *input_redirect_pos = strchr(command, '<');
+        char *output_redirect_pos = strchr(command, '>');
+        
+        if (input_redirect_pos != NULL || output_redirect_pos != NULL) {
+          if (input_redirect_pos != NULL) {
+            input_redirect = 1;
+            *input_redirect_pos = '\0';
+            input_file = strtok(input_redirect_pos + 1, " \t");
+        }
+            
+        if (output_redirect_pos != NULL) {
+            output_redirect = 1;
+            *output_redirect_pos = '\0';
+            output_file = strtok(output_redirect_pos + 1, " \t");
+          }
+        }
+
+        // remove trailing spaces
         char * end = command + strlen(command) - 1;
-        while (end > command && *end == ' ') end--;
-        *(end + 1) = '\0';
+        while (end > command && *end == ' ') {
+            *end = '\0';
+            end--;
+        }
 
         parse_args(command, args);
-        execute(args[0], args);
-      }
-      else{
-        if (token3 == NULL){
-          //remove leading spaces from right part of command and trailing spaces from left part of command
-          while (*command_right == ' ') command_right++;
-          char * end = command_left + strlen(command_left) - 1;
-          while (end > command_left && *end == ' ') end--;
-          *(end + 1) = '\0';
-
-          sscanf(command_right, " %s", command_right);
-          int place = redirectOut(command_right);
-          parse_args(command_left, args);
-          execute(args[0], args);
-          redirectOutBack(place);
-        }
-        else{
-          sscanf(token3, " %s", token3);
-          redirectIn(input3, token3);
-          parse_args(input3, args);
-          execute(args[0], args);
-        }
+        execute(args, input_redirect, output_redirect, input_file, output_file);
       }
     }
   }
