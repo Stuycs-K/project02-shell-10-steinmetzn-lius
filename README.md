@@ -19,6 +19,9 @@
 - using popen for pipes
 - redirection with more than one pipe at a time
 
+**Bugs:**
+- if doing ./shell.out < lines.txt and lines.txt contains a pipe, the commands will execute once, then there will be fork fail: Resource temporarily unavailable
+
 **Function Headers:**
 ```
 void print_prompt();
