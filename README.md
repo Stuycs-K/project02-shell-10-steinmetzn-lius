@@ -12,7 +12,8 @@
 - command separation with semicolons
 - printing cwd path
 - exiting w/ "exit" and ctrl d
-- redirection w/ >
+- redirection w/ > and <
+- handling one pipe
 
 **Function Headers:**
 ```
