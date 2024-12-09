@@ -47,13 +47,13 @@ int main() {
         if (input_redirect_pos != NULL || output_redirect_pos != NULL) {
             if (input_redirect_pos != NULL) {
                 input_redirect = 1;
-                *input_redirect_pos = '\0';  // Null terminate the command before '<'
+                *input_redirect_pos = '\0';
                 input_file = strtok(input_redirect_pos + 1, " \t");
             }
             
             if (output_redirect_pos != NULL) {
                 output_redirect = 1;
-                *output_redirect_pos = '\0';  // Null terminate the command before '>'
+                *output_redirect_pos = '\0';
                 output_file = strtok(output_redirect_pos + 1, " \t");
             }
         }
