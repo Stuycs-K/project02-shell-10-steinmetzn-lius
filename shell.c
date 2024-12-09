@@ -51,7 +51,7 @@ void parse_args(char * line, char ** arg_ary){
   arg_ary[i] = NULL;
 }
 
-//fork and execvp; args[] is arguments from input; returns 1 when done
+//fork and execvp; args[] is arguments from input; redirect stdout if output_redirect 1; redirect stdin if input_redirect 1; no return
 void execute(char * args[], int input_redirect, int output_redirect, char *input_file, char *output_file){
 
   // handling "cd" command
@@ -81,8 +81,8 @@ void execute(char * args[], int input_redirect, int output_redirect, char *input
     if (input_redirect) {
       int input_fd = open(input_file, O_RDONLY);
       if (input_fd == -1) {
-          perror("Error opening input file");
-          exit(1);
+        perror("Error opening input file");
+        exit(1);
       }
       fflush(stdin);
       dup2(input_fd, STDIN_FILENO);
@@ -93,8 +93,8 @@ void execute(char * args[], int input_redirect, int output_redirect, char *input
     if (output_redirect) {
       int output_fd = open(output_file, O_WRONLY | O_TRUNC | O_CREAT, 0644);
       if (output_fd == -1) {
-          perror("Error opening output file");
-          exit(1);
+        perror("Error opening output file");
+        exit(1);
       }
       fflush(stdout);
       dup2(output_fd, STDOUT_FILENO);
@@ -110,37 +110,3 @@ void execute(char * args[], int input_redirect, int output_redirect, char *input
     child = wait(&status);
   }
 }
-
-// //redirect stdout when > comes up; newOut is name of file; returns backup stdout
-// int redirectOut(char * newOut){
-//   int fd1 = open(newOut, O_RDWR | O_TRUNC | O_CREAT, 0644);
-//   int stdout = STDOUT_FILENO;
-//   int backup_stdout = dup( stdout ); // save stdout for later
-//   dup2(fd1, stdout); //sets FILENO's entry to the file for fd1.
-//   return backup_stdout;
-// }
-
-// //redirect stdout back to backup; backup_stdout is old stdout
-// void redirectOutBack(int backup_stdout){
-//   fflush(stdout);//not needed when a child process exits, becaue exiting a process will flush automatically.
-//   int stdout = STDOUT_FILENO;
-//   dup2(backup_stdout, stdout);
-//   close(backup_stdout);
-// }
-
-// //redirect stdin when < comes up; newIn is name of file; returns backup stdin
-// int redirectIn(char * newIn){
-//   int fd1 = open(newIn, O_RDWR | O_TRUNC | O_CREAT, 0644);
-//   int stdin = STDIN_FILENO;
-//   int backup_stdin = dup(stdin);
-//   dup2(fd1, stdin);
-//   return backup_stdin;
-// }
-
-// //redirect stdin back to backup; backup_stdin is old stdin
-// void redirectInBack(int backup_stdin){
-//   fflush(stdin);//not needed when a child process exits, becaue exiting a process will flush automatically.
-//   int stdin = STDOUT_FILENO;
-//   dup2(backup_stdin, stdin);
-//   close(backup_stdin);
-// }

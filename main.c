@@ -6,7 +6,11 @@
 #define MAX_INPUT_SIZE 250
 #define MAX_ARGS 100
 
+// pipe handling, call once for each side. if side is left, redirect stdout to a temp file. if side is right, redirect the temp file to stdin. returns nothinng
 void handle_pipe(char * command, char * side) {
+  char *args[MAX_ARGS];
+  
+  // preparing for redirection
   int input_redirect = 0, output_redirect = 0;
   char *input_file = NULL, *output_file = NULL;
   
@@ -14,8 +18,6 @@ void handle_pipe(char * command, char * side) {
   while (*command == ' ') command++;
 
   char *command_copy = strdup(command);
-  char *args[MAX_ARGS];
-  int arg_count = 0;
 
   if (strcmp(side, "left") == 0) {
     char *input_redirect_pos = strchr(command_copy, '<');
@@ -56,6 +58,7 @@ void handle_pipe(char * command, char * side) {
 
     parse_args(command_copy, args);
     execute(args, input_redirect, output_redirect, input_file, output_file);
+    remove("temp");
   }
 }
 
@@ -123,7 +126,6 @@ int main() {
             *end = '\0';
             end--;
         }
-
 
         parse_args(command_copy, args);
         execute(args, input_redirect, output_redirect, input_file, output_file);
