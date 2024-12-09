@@ -6,6 +6,52 @@
 #define MAX_INPUT_SIZE 250
 #define MAX_ARGS 100
 
+void thing() {
+
+}
+
+void handle_pipe(char * command[], char * side) {
+  int input_redirect = 0, output_redirect = 0;
+  char *input_file = NULL, *output_file = NULL;
+  
+  // remove leading spaces
+  while (*command == ' ') command;
+
+  char *command_copy = strdup(command);
+  char *args[MAX_ARGS];
+  int arg_count = 0;
+
+  if (strcmp(side, "left") == 0) {
+    char *input_redirect_pos = strchr(command_copy, '<');
+    if (input_redirect_pos != NULL) {
+      input_redirect = 1;
+      *input_redirect_pos = '\0';
+      input_file = strtok(input_redirect_pos + 1, " \t");
+    }
+    output_redirect = 1;
+    output_file = "temp";
+    execute(args, input_redirect, output_redirect, input_file, output_file);
+  }
+  else {
+    char *output_redirect_pos = strchr(command_copy, '>');
+    if (output_redirect_pos != NULL) {
+      output_redirect = 1;
+      *output_redirect_pos = '\0';
+      output_file = strtok(output_redirect_pos + 1, " \t");
+    }
+    input_redirect = 1;
+    input_file = "temp";
+    execute(args, input_redirect, output_redirect, input_file, output_file);
+  }
+  
+  // remove trailing spaces
+  char * end = command_copy + strlen(command_copy) - 1;
+  while (end > command_copy && *end == ' ') {
+      *end = '\0';
+      end--;
+  }
+}
+
 int main() {
   while (1){
     print_prompt();
@@ -29,6 +75,14 @@ int main() {
     }
     
     for (int i = 0; i < command_count; i++) {
+        // pipe
+        if (strchr(commands[i], '|')) {
+          char *cmd1 = strsep(&commands[i], "|");
+          handle_pipe(&cmd1, "left");
+          handle_pipe(&commands[i], "right");
+        }
+        else {
+
         // preparing to handle redirection
         int input_redirect = 0, output_redirect = 0;
         char *input_file = NULL, *output_file = NULL;
@@ -64,8 +118,10 @@ int main() {
             end--;
         }
 
+
         parse_args(command_copy, args);
         execute(args, input_redirect, output_redirect, input_file, output_file);
+        }
     }
     
   }
