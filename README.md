@@ -15,16 +15,15 @@
 - redirection w/ > and <
 - handling one pipe
 
+**Failed Shell Features:**
+- using popen for pipes
+- redirection with more than one pipe at a time
+
 **Function Headers:**
 ```
 void print_prompt();
 void change_dir(char * path);
 void parse_args(char * line, char ** arg_ary);
-void execute(char first[], char * args[]);
-int redirectOut(char * newOut);
-void redirectOutBack(int backup_stdout);
-int redirectIn(char * newIn);
-void redirectInBack(int backup_stdin);
-void handle_pipe(char * command, char * side);
+void execute(char * args[], int input_redirect, int output_redirect, char *input_file, char *output_file);
 ```
 

@@ -12,13 +12,6 @@
 #define BUFFER_SIZE 1024
 
 
-int err(){
-  printf("errno %d\n",errno);
-  printf("%s\n",strerror(errno));
-  exit(1);
-}
-
-
 // prints current working directory. shortens home directory to ~. returns nothing
 void print_prompt() {
   char dir[MAX_PATH_LEN];
