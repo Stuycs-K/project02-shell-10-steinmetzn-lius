@@ -6,16 +6,12 @@
 #define MAX_INPUT_SIZE 250
 #define MAX_ARGS 100
 
-void thing() {
-
-}
-
-void handle_pipe(char * command[], char * side) {
+void handle_pipe(char * command, char * side) {
   int input_redirect = 0, output_redirect = 0;
   char *input_file = NULL, *output_file = NULL;
   
   // remove leading spaces
-  while (*command == ' ') command;
+  while (*command == ' ') command++;
 
   char *command_copy = strdup(command);
   char *args[MAX_ARGS];
@@ -30,6 +26,15 @@ void handle_pipe(char * command[], char * side) {
     }
     output_redirect = 1;
     output_file = "temp";
+
+    // remove trailing spaces
+    char * end = command_copy + strlen(command_copy) - 1;
+    while (end > command_copy && *end == ' ') {
+        *end = '\0';
+        end--;
+    }
+
+    parse_args(command_copy, args);
     execute(args, input_redirect, output_redirect, input_file, output_file);
   }
   else {
@@ -41,14 +46,16 @@ void handle_pipe(char * command[], char * side) {
     }
     input_redirect = 1;
     input_file = "temp";
+
+    // remove trailing spaces
+    char * end = command_copy + strlen(command_copy) - 1;
+    while (end > command_copy && *end == ' ') {
+        *end = '\0';
+        end--;
+    }
+
+    parse_args(command_copy, args);
     execute(args, input_redirect, output_redirect, input_file, output_file);
-  }
-  
-  // remove trailing spaces
-  char * end = command_copy + strlen(command_copy) - 1;
-  while (end > command_copy && *end == ' ') {
-      *end = '\0';
-      end--;
   }
 }
 
@@ -78,8 +85,8 @@ int main() {
         // pipe
         if (strchr(commands[i], '|')) {
           char *cmd1 = strsep(&commands[i], "|");
-          handle_pipe(&cmd1, "left");
-          handle_pipe(&commands[i], "right");
+          handle_pipe(cmd1, "left");
+          handle_pipe(commands[i], "right");
         }
         else {
 
@@ -92,24 +99,23 @@ int main() {
 
         char *command_copy = strdup(commands[i]);
         char *args[MAX_ARGS];
-        int arg_count = 0;
 
         // check for redirection symbols
         char *input_redirect_pos = strchr(command_copy, '<');
         char *output_redirect_pos = strchr(command_copy, '>');
         
         if (input_redirect_pos != NULL || output_redirect_pos != NULL) {
-            if (input_redirect_pos != NULL) {
-                input_redirect = 1;
-                *input_redirect_pos = '\0';
-                input_file = strtok(input_redirect_pos + 1, " \t");
-            }
+          if (input_redirect_pos != NULL) {
+            input_redirect = 1;
+            *input_redirect_pos = '\0';
+            input_file = strtok(input_redirect_pos + 1, " \t");
+        }
             
-            if (output_redirect_pos != NULL) {
-                output_redirect = 1;
-                *output_redirect_pos = '\0';
-                output_file = strtok(output_redirect_pos + 1, " \t");
-            }
+        if (output_redirect_pos != NULL) {
+            output_redirect = 1;
+            *output_redirect_pos = '\0';
+            output_file = strtok(output_redirect_pos + 1, " \t");
+          }
         }
         // remove trailing spaces
         char * end = command_copy + strlen(command_copy) - 1;
