@@ -18,7 +18,7 @@ void handle_pipe(char * command, char * side) {
   while (*command == ' ') command++;
 
   if (strcmp(side, "left") == 0) {
-    char *input_redirect_pos = strchr(command, '<');
+    char * input_redirect_pos = strchr(command, '<');
     if (input_redirect_pos != NULL) {
       input_redirect = 1;
       *input_redirect_pos = '\0';
@@ -39,7 +39,7 @@ void handle_pipe(char * command, char * side) {
   }
   // side == "right"
   else {
-    char *output_redirect_pos = strchr(command, '>');
+    char * output_redirect_pos = strchr(command, '>');
     if (output_redirect_pos != NULL) {
       output_redirect = 1;
       *output_redirect_pos = '\0';
@@ -80,7 +80,7 @@ int main() {
     while ((command = strsep(&input, ";")) != NULL) {
       // pipe
       if (strchr(command, '|')) {
-        char *cmd1 = strsep(&command, "|");
+        char * cmd1 = strsep(&command, "|");
         handle_pipe(cmd1, "left");
         handle_pipe(command, "right");
       }
@@ -95,8 +95,8 @@ int main() {
         while (*command == ' ') command++;
 
         // check for redirection symbols
-        char *input_redirect_pos = strchr(command, '<');
-        char *output_redirect_pos = strchr(command, '>');
+        char * input_redirect_pos = strchr(command, '<');
+        char * output_redirect_pos = strchr(command, '>');
         
         if (input_redirect_pos != NULL || output_redirect_pos != NULL) {
           if (input_redirect_pos != NULL) {
