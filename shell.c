@@ -32,7 +32,7 @@ void print_prompt() {
 }
 
 // changes directory to given path. returns nothing
-void change_dir(char *path) {
+void change_dir(char * path) {
   if (chdir(path) != 0) {
     perror("cd error");
   }
@@ -52,7 +52,7 @@ void parse_args(char * line, char ** arg_ary){
 }
 
 //fork and execvp; args[] is arguments from input; redirect stdout if output_redirect 1; redirect stdin if input_redirect 1; no return
-void execute(char * args[], int input_redirect, int output_redirect, char *input_file, char *output_file){
+void execute(char * args[], int input_redirect, int output_redirect, char * input_file, char * output_file){
 
   // handling "cd" command
   if (strcmp(args[0], "cd") == 0) {
